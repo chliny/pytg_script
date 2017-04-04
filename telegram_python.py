@@ -4,6 +4,7 @@
 import logging
 import os
 import socket
+import collections
 import time
 import subprocess
 
@@ -97,3 +98,25 @@ class PyTelegram(object):
     def channel_get_members(self, name):
         members = self.sender.channel_get_members(name)
         return members
+
+    def get_history(self, peer, limit=0, offset=0):
+        if limit == 0:
+            ret = self.sender.history(peer, retry_connect=10, result_timeout=100)
+        elif offset == 0:
+            ret = self.sender.history(peer, limit, retry_connect=10)
+        else:
+            ret = self.sender.history(peer, limit, offset, retry_connect=10)
+        #logging.debug(ret)
+        ret.reverse()
+        history_dict = collections.OrderedDict()
+        for chat_info in ret:
+            try:
+                if chat_info["event"] != "message":
+                    continue
+                chatid = chat_info["id"]
+                history_dict[chatid] = chat_info
+                logging.debug(chat_info)
+            except Exception as e:
+                logging.error(e)
+        return history_dict
+

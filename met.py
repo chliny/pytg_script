@@ -50,13 +50,59 @@ class AutoMet(PyTelegram):
                 user = user_dict["username"]
                 if user in ["chliny", "enl_jarvis_bot"]:
                     continue
+                if self.ismeted(user):
+                    logging.debug("%s has meted" % user)
+                    continue
+
                 logging.debug(user)
                 self.met_user(user, group)
             except Exception as e:
                 logging.error(e)
         return True
 
-    def met_user(self, group, user):
+    def ismeted(self, user):
+        self.met_user(user, self.test_group)
+        history_ret = self.get_history(self.test_group)
+        metword = "";
+        trytimes = 10
+        while True and trytimes > 0:
+            for chatid, chat_info in history_ret.items():
+                try:
+                    if chat_info["event"] != "message":
+                        continue
+                    if "reply_id" not in chat_info:
+                        break
+                    logging.debug(chat_info)
+                    reply_id = chat_info["reply_id"]
+                    orig_info = history_ret[reply_id]
+                    orig_text = orig_info["text"]
+                    if orig_text.find(user) == -1:
+                        continue
+                    else: 
+                        metword = chat_info["text"]
+                        break
+                except Exception as e:
+                    logging.error(e)
+
+            if not metword :
+                time.sleep(5)
+                history_ret = self.get_history(self.test_group)
+            else:
+                break
+
+            trytimes -= 1
+
+        logging.debug(metword)
+        if metword.startswith("您之前已经见过") or metword.startswith("You have already met"):
+            return True
+        elif metword.startswith("抱歉我并不知道") or metword.startswith("I'm not aware of who"):
+            return True
+        else:
+            logging.debug(metword)
+            return False
+        return True
+
+    def met_user(self, user, group):
         try:
             if user.startswith("@"):
                 word = "/met %s" % user
