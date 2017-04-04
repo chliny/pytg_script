@@ -54,7 +54,9 @@ class AutoMet(PyTelegram):
         members = self.channel_get_members(group)
         return met_userlist(members,group)
 
-    def met_userlist(self, userlist, group="testtgcli"):
+    def met_userlist(self, userlist, group=""):
+        if not group:
+            group = self.test_group
         for user_dict in userlist:
             try:
                 user = user_dict["username"]
