@@ -120,3 +120,22 @@ class PyTelegram(object):
                 logging.error(e)
         return history_dict
 
+    def create_group(self, groupname, userlist):
+        try:
+            ret = self.sender.create_group_chat(groupname, userlist[0])
+            logging.debug(ret)
+        except Exception as e:
+            logging.error(e)
+            return False
+
+        if len(userlist) == 1:
+            return True
+
+        for username in usrelist[1:]:
+            try:
+                ret = self.sender.chat_add_user(groupname, username, 0)
+                logging.debug(ret)
+            except Exception as e:
+                logging.error(e)
+        return True
+

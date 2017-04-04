@@ -10,7 +10,17 @@ from telegram_python import PyTelegram
 class AutoMet(PyTelegram):
     def __init__(self):
         super(AutoMet, self).__init__()
-        self.test_group = "testtgcli"
+        self.create_test_group()
+
+    def create_test_group(self):
+        try:
+            self.test_group = "mettest"
+            self_info = self.sender.get_self()
+            logging.debug(self_info)
+            self_username = self_info["username"]
+            self.create_group(self.test_group, [self_username, "enl_jarvis_bot"])
+        except Exception as e :
+            logging.error(e)
 
     def parse_argv(self):
         try:
