@@ -41,11 +41,11 @@ class GetPrintName(PyTelegram):
         return self.get_printname(target)
 
     def get_printname(self, target):
-        print_name = self.parse_channels(target):
+        print_name = self.parse_channels(target)
         if print_name:
             return print_name
 
-        print_name = self.parse_dialogs(target):
+        print_name = self.parse_dialogs(target)
         if print_name:
             return print_name
 

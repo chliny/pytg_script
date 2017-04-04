@@ -8,7 +8,7 @@ from get_printname import GetPrintName
 
 class AutoMet(PyTelegram):
     def __init__(self):
-        super(AutoMet, self),__init__()
+        super(AutoMet, self).__init__()
         self.gp = GetPrintName()
         
 
@@ -19,7 +19,7 @@ class AutoMet(PyTelegram):
             logging.error(e)
             return False
         group_printname = self.gp.get_printname(target)
-	if not group_printname:
+        if not group_printname:
             return False	
         return self.met_group(group_printname)
 
@@ -37,7 +37,7 @@ class AutoMet(PyTelegram):
                 logging.error(e)
         return True
 
-   def met_user(self, group, user):
+    def met_user(self, group, user):
         try:
             if user.startswith("@"):
                 word = "/met %s" % user
