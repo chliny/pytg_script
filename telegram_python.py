@@ -80,11 +80,17 @@ class PyTelegram(object):
         self.receiver.message(receive_coroutine_loop())
 
 
-    def get_channel_list(self, limit, offset):
-        channels = self.sender.channel_list(limit, offset)
+    def get_channel_list(self, limit=0, offset=0):
+        if limit == 0 and offset == 0:
+            channels = self.sender.channel_list()
+        else:
+            channels = self.sender.channel_list(limit, offset)
         return channels
 
-    def get_dialog_list(self, limit, offset):
-        dialogs = self.sender.dialog_list(limit, offset)
+    def get_dialog_list(self, limit=0, offset=0):
+        if limit == 0 and offset == 0:
+            dialogs = self.sender.dialog_list()
+        else:
+            dialogs = self.sender.dialog_list(limit, offset)
         return dialogs
 
