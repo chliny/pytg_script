@@ -2,15 +2,15 @@
 #-*- coding=utf-8 -*-
 
 import logging
+import time
+import sys
 
 from telegram_python import PyTelegram
-from get_printname import GetPrintName
 
 class AutoMet(PyTelegram):
     def __init__(self):
         super(AutoMet, self).__init__()
-        self.gp = GetPrintName()
-        
+        self.test_group = "testtgcli"
 
     def parse_argv(self):
         try:
@@ -18,21 +18,40 @@ class AutoMet(PyTelegram):
         except Exception as e:
             logging.error(e)
             return False
-        group_printname = self.gp.get_printname(target)
-        if not group_printname:
+        target_info = self.get_printinfo(target)
+        if not target_info:
             return False	
-        return self.met_group(group_printname)
+        try:
+            target_type = target_info["peer_type"]
+            printname = target_info["print_name"]
+        except Exception as e:
+            logging.error(e)
 
+        if target_type == "user":
+            return self.met_userlist([target_info])
+        else:
+            return self.met_group(printname)
+
+    def get_printinfo(self, target):
+        dialogs = self.get_dialog_list()
+        for dialog_info in dialogs:
+            for key in ["title", "username", "print_name"]:
+                if key in dialog_info and dialog_info[key] == target:
+                    return dialog_info
+        return {}
 
     def met_group(self, group):
         members = self.channel_get_members(group)
-        for user_dict in members:
+        return met_userlist(members,group)
+
+    def met_userlist(self, userlist, group="testtgcli"):
+        for user_dict in userlist:
             try:
                 user = user_dict["username"]
                 if user in ["chliny", "enl_jarvis_bot"]:
                     continue
                 logging.debug(user)
-                self.met_user(group, user)
+                self.met_user(user, group)
             except Exception as e:
                 logging.error(e)
         return True
