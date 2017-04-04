@@ -15,8 +15,8 @@ class GetPrintName(PyTelegram):
             for key in ["title", "username"]:
                 if key in dialog_info and dialog_info[key] == target:
                     self.print_dict(dialog_info)
-                    return True
-        return False
+                    return dialog_info["print_name"]
+        return ""
     
     def print_dict(self, target_dict):
         for key, value in target_dict.items():
@@ -29,25 +29,29 @@ class GetPrintName(PyTelegram):
         for channel_info in channels:
             if "title" in channel_info and channel_info["title"] == target:
                 self.print_dict(channel_info)
-                return True
+                return channel_info["print_name"]
         return False
 
-    def get_printname(self):
+    def parse_argv(self):
         try:
             target = sys.argv[1]
         except Exception as e:
             logging.error(e)
             return False
+        return self.get_printname(target)
 
-        if self.parse_channels(target):
-            return True
+    def get_printname(self, target):
+        print_name = self.parse_channels(target):
+        if print_name:
+            return print_name
 
-        if self.parse_dialogs(target):
-            return True
+        print_name = self.parse_dialogs(target):
+        if print_name:
+            return print_name
 
-        return False
+        return ""
 
 if __name__ == "__main__":
     gpn = GetPrintName()
-    gpn.get_printname()
+    gpn.parse_argv()
 

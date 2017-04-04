@@ -94,3 +94,6 @@ class PyTelegram(object):
             dialogs = self.sender.dialog_list(limit, offset)
         return dialogs
 
+    def channel_get_members(self, name):
+        members = self.sender.channel_get_members(name)
+        return members
