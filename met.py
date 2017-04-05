@@ -15,10 +15,15 @@ class AutoMet(PyTelegram):
     def create_test_group(self):
         try:
             self.test_group = "mettest"
-            self_info = self.sender.get_self()
-            logging.debug(self_info)
-            self_username = self_info["username"]
-            self.create_group(self.test_group, [self_username, "enl_jarvis_bot"])
+            test_groupinfo = self.get_printinfo(self.test_group)
+            if not test_groupinfo:
+                self_info = self.sender.get_self()
+                logging.debug(self_info)
+                self_username = self_info["username"]
+                self.create_group(self.test_group, [self_username, "enl_jarvis_bot"])
+                test_groupinfo = self.get_printinfo(self.test_group)
+
+            self.test_groupid = test_groupinfo["id"]
         except Exception as e :
             logging.error(e)
 
@@ -74,7 +79,7 @@ class AutoMet(PyTelegram):
 
     def ismeted(self, user):
         self.met_user(user, self.test_group)
-        history_ret = self.get_history(self.test_group)
+        history_ret = self.get_history(self.test_groupid, 2)
         metword = "";
         trytimes = 10
         while True and trytimes > 0:
@@ -98,7 +103,7 @@ class AutoMet(PyTelegram):
 
             if not metword :
                 time.sleep(5)
-                history_ret = self.get_history(self.test_group)
+                history_ret = self.get_history(self.test_groupid, 2)
             else:
                 break
 

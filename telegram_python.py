@@ -131,7 +131,7 @@ class PyTelegram(object):
         if len(userlist) == 1:
             return True
 
-        for username in usrelist[1:]:
+        for username in userlist[1:]:
             try:
                 ret = self.sender.chat_add_user(groupname, username, 0)
                 logging.debug(ret)
