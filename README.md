@@ -14,7 +14,7 @@ scripts of python telegram-cli by chliny
 
     - 使用前创建一个叫`mettest`，成员为 @enl_jarvis_bot 的群，会检查是否已met过.
 
-- `pythn3 replymet.py [ingress_id] [groupname1] [groupname2] ... `  自动回met
+- `pythn3 replymet.py [ingress_id] [groupname1] [groupname2] ... & `  自动回met
 
     - 同上，第一次使用telegram-cli㙘手动启动
 
