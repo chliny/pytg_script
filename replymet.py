@@ -75,6 +75,16 @@ class ReplyMet(PyTelegram):
             return False
 
         try:
+            if "own" in msg_dict and msg_dict["own"]:
+                return False
+            if "mention" in msg_dict and not msg_dict["mention"]:
+                return False
+        except Exception as e:
+            logging.error(e)
+            logging.debug(msg_dict)
+            return False
+
+        try:
             logging.debug(msg_dict)
             sender_info = msg_dict["sender"]
             receiver_id = msg_dict["receiver"]["id"]
