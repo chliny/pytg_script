@@ -59,20 +59,25 @@ class ReplyMet(PyTelegram):
 
     def parse_recive(self, msg_dict):
         try:
-            event_type = msg_dict["event"]
+            if msg_dict["event"] != "message":
+                return False
         except Exception as e:
             logging.error(e)
+            logging.debug(msg_dict)
             return False
 
-        if event_type != "message":
+        try:
+            if msg_dict["type"] != "channel":
+                return False
+        except Exception as e:
+            logging.error(e)
             logging.debug(msg_dict)
             return False
 
         try:
             logging.debug(msg_dict)
             sender_info = msg_dict["sender"]
-            receiver_info = msg_dict["receiver"]
-            receiver_id = receiver_info["id"]
+            receiver_id = msg_dict["receiver"]["id"]
         except Exception as e:
             logging.error(e)
             logging.debug(msg_dict)
