@@ -25,9 +25,12 @@ class PyTelegram(object):
 
     def setlog(self):
         basepath = os.path.dirname(os.path.realpath(__file__))
+        logdir = os.path.join(basepath, "./log")
+        if not os.path.exists(logdir):
+            os.mkdir(logdir)
         self.logname = os.path.join(basepath, "./log/%s.log" % time.strftime("%Y%m%d%H"))
         LOG_FORMAT = '[%(asctime)s] : %(levelname)s %(filename)s - %(funcName)s(%(lineno)d) - %(message)s'
-        logging.basicConfig(format=LOG_FORMAT, level=0, filename=self.logname)
+        logging.basicConfig(format=LOG_FORMAT, level=0, handlers=[logging.FileHandler(self.logname, 'a', 'utf-8')])
 
     def need_proxy(self):
         try:
