@@ -3,6 +3,7 @@
 
 import logging
 import os
+import sys
 import socket
 import collections
 import time
@@ -47,10 +48,10 @@ class PyTelegram(object):
 
     def start(self):
         if self.need_proxy():
-            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup proxychains telegram-cli --json --tcp-port 4458 -k /etc/telegram-cli/server.pub >> %s 2>&1 & fi"""\
+            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup proxychains telegram-cli --json --tcp-port 4458 >> %s 2>&1 & fi"""\
         % (self.logname)
         else:
-            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup telegram-cli --json --tcp-port 4458 -k /etc/telegram-cli/server.pub >> %s 2>&1 & fi"""\
+            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup telegram-cli --json --tcp-port 4458  >> %s 2>&1 & fi"""\
         % (self.logname)
 
         logging.debug(cmd)
