@@ -67,7 +67,7 @@ class ReplyMet(PyTelegram):
             return False
 
         try:
-            receiver_info = msg_dict["receiver"]
+            receive_info = msg_dict["receiver"]
             receive_type = receive_info["type"]
             if receive_type not in ["channel", "chat"] \
                     or (receive_type == "chat" and  receive_info["members_num"] <= 2):
