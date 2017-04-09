@@ -28,10 +28,10 @@ class ReplyMet(PyTelegram):
             return self.print_help()
 
         try:
-            ingress_id = sys.argv[1]
+            ingress_id = sys.argv[1].lower()
             self.selfname = [ingress_id]
             self_info = self.sender.get_self()
-            self_username = self_info["username"]
+            self_username = self_info["username"].lower()
             self.selfname.append("@"+self_username)
             logging.debug(self.selfname)
         except Exception as e :
@@ -102,8 +102,8 @@ class ReplyMet(PyTelegram):
         try:
             msg_text = msg_dict["text"]
             msg_split = msg_text.strip().split()
-            if len(msg_split)>=2 and msg_split[0] == "/met"\
-                    and msg_split[1] in self.selfname:
+            if len(msg_split)>=2 and msg_split[0].lower() == "/met"\
+                    and msg_split[1].lower() in self.selfname:
                 self.met(sender_info["username"], receiver_id)
         except Exception as e :
             logging.error(e)
