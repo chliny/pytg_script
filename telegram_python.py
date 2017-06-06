@@ -43,8 +43,8 @@ class PyTelegram(object):
             logging.error(e)
             return False
 
-        if selfip.startswith("192.168") or selfip.startswith("10")\
-                or selfip.startswith("172.1"):
+        if selfip.startswith("192.168.") or selfip.startswith("10.")\
+                or selfip.startswith("172.1") or selfip.startswith("10.64."):
             logging.debug("need proxy")
             return True
         else:
