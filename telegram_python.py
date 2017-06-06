@@ -17,11 +17,13 @@ from pytg.utils import coroutine
 
 class PyTelegram(object):
     def __init__(self):
+        tgcli_port = 4458
         self.setlog()
-        if not self.start():
+        if not self.start(tgcli_port):
             sys.exit(1)
-        self.receiver = Receiver(host="localhost", port=4458)
-        self.sender = Sender(host="localhost", port=4458)
+
+        self.receiver = Receiver(host="localhost", port=tgcli_port)
+        self.sender = Sender(host="localhost", port=tgcli_port)
 
     def setlog(self):
         basepath = os.path.dirname(os.path.realpath(__file__))
@@ -49,13 +51,24 @@ class PyTelegram(object):
             logging.debug("no need proxy")
             return False
 
-    def start(self):
+    def start(self, tgcli_port):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            check = s.connect_ex(('127.0.0.1', tgcli_port))
+            s.close()
+        except Exception as e:
+            logging.error(e)
+            check = 1
+
+        if check == 0:
+            return True
+
         if self.need_proxy():
-            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup proxychains telegram-cli --json --tcp-port 4458 >> %s 2>&1 & fi"""\
-        % (self.logname)
+            cmd = """nohup proxychains telegram-cli --json --tcp-port %d >> %s 2>&1 &"""\
+                % (tgcli_port, self.logname)
         else:
-            cmd = """if [[ `ps -ef|grep telegram-cli|grep -v grep|wc -l` -lt 1 ]];then nohup telegram-cli --json --tcp-port 4458  >> %s 2>&1 & fi"""\
-        % (self.logname)
+            cmd = """nohup telegram-cli --json --tcp-port %d >> %s 2>&1 &"""\
+                % (tgcli_port, self.logname)
 
         logging.debug(cmd)
         ret = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
