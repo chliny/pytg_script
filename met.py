@@ -57,7 +57,7 @@ class AutoMet(PyTelegram):
 
     def met_group(self, group):
         members = self.channel_get_members(group)
-        return met_userlist(members,group)
+        return self.met_userlist(members,group)
 
     def met_userlist(self, userlist, group=""):
         if not group:
