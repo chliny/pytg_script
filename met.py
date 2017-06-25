@@ -44,6 +44,8 @@ class AutoMet(PyTelegram):
 
         if target_type == "user":
             return self.met_userlist([target_info])
+        elif target_type == "chat":
+            return self.met_chat(printname)
         else:
             return self.met_group(printname)
 
@@ -55,8 +57,20 @@ class AutoMet(PyTelegram):
                     return dialog_info
         return {}
 
+    def met_chat(self, group):
+        try:
+            members = self.chat_get_members(group)
+        except Exception as e:
+            logging.error(e)
+            return False
+        return self.met_userlist(members,group)
+
     def met_group(self, group):
-        members = self.channel_get_members(group)
+        try:
+            members = self.channel_get_members(group)
+        except Exception as e:
+            logging.error(e)
+            return False
         return self.met_userlist(members,group)
 
     def met_userlist(self, userlist, group=""):

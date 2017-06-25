@@ -116,6 +116,11 @@ class PyTelegram(object):
         members = self.sender.channel_get_members(name)
         return members
 
+    def chat_get_members(self, name):
+        chat_info_dict = self.sender.chat_info(name)
+        meminfo_list = chat_info_dict["members"]
+        return meminfo_list
+
     def get_history(self, peer, limit=0, offset=0):
         if limit == 0:
             ret = self.sender.history(peer, retry_connect=10, result_timeout=100)
