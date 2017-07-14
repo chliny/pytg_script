@@ -105,6 +105,7 @@ class ReplyMet(PyTelegram):
             msg_split = msg_text.strip().split()
             if len(msg_split)>=2 and msg_split[0].lower() == "/met" and msg_split[1].lower() in self.selfname:
 		if sender_info["username"] in metlist:
+			self.sender.send_msg(receiver_id, 'please met me only once.')
 			return False
 		else:
 			self.met(sender_info["username"], receiver_id)
