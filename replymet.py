@@ -3,9 +3,10 @@
 
 import logging
 import sys
-
+import time
 from telegram_python import PyTelegram
-
+global metlist
+metlist=[]
 class ReplyMet(PyTelegram):
     def __init__(self):
         super(ReplyMet, self).__init__()
@@ -48,9 +49,11 @@ class ReplyMet(PyTelegram):
         self.receive_loop()
         return True
 
-    def met(self, username, group):
+    def met(self, username, group,mettype):
         try:
             word = "/met @%s" % username
+            if mettype==0 :
+                word= u"@%s Please only met me once!" % username
             self.sender.send_msg(group, word)
         except Exception as e:
             logging.error(e)
@@ -102,9 +105,24 @@ class ReplyMet(PyTelegram):
         try:
             msg_text = msg_dict["text"]
             msg_split = msg_text.strip().split()
-            if len(msg_split)>=2 and msg_split[0].lower() == "/met"\
-                    and msg_split[1].lower() in self.selfname:
-                self.met(sender_info["username"], receiver_id)
+            if len(msg_split)>=2 and msg_split[0].lower() == "/met" and msg_split[1].lower() in self.selfname:
+				if sender_info["username"] in metlist:
+					self.met(sender_info["username"], receiver_id,0)
+					logging.debug('\n')
+					logging.debug('\n')
+					logging.debug('\n')
+				else:
+					self.met(sender_info["username"], receiver_id,1)
+					f=open("metlist.txt","a")
+					f.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+					f.write('\t')
+					f.write(sender_info["username"])
+					f.write('\n')
+					if len(metlist)>=100 :
+						del metlist[0]
+						metlist.append(sender_info["username"])
+					else :
+						metlist.append(sender_info["username"])
         except Exception as e :
             logging.error(e)
             return False
