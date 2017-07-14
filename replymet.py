@@ -108,9 +108,6 @@ class ReplyMet(PyTelegram):
             if len(msg_split)>=2 and msg_split[0].lower() == "/met" and msg_split[1].lower() in self.selfname:
 				if sender_info["username"] in metlist:
 					self.met(sender_info["username"], receiver_id,0)
-					logging.debug('\n')
-					logging.debug('\n')
-					logging.debug('\n')
 				else:
 					self.met(sender_info["username"], receiver_id,1)
 					f=open("metlist.txt","a")
