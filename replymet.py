@@ -4,13 +4,16 @@
 import logging
 import sys
 import time
+import os
 from telegram_python import PyTelegram
-global metlist
-metlist=[]
+
 class ReplyMet(PyTelegram):
     def __init__(self):
         super(ReplyMet, self).__init__()
+        self.MAX_METLEN = 100
         self.listened_list = []
+        self.metlist=[]
+        self.get_met_history()
         self.dialogs = self.get_dialog_list()
 
     def print_help(self):
@@ -24,6 +27,20 @@ class ReplyMet(PyTelegram):
                     return dialog_info
         return {}
 
+    def get_met_history(self):
+        line_list = []
+        if not os.path.exists("metlist.txt"):
+            return 
+
+        with open("metlist.txt") as fd:
+            for line in fd.readlines()[-1*self.MAX_METLEN:]:
+                try:
+                    line_sp = line.split("\t")
+                    self.metlist.append(line_sp[-1].strip())
+                except Exception as e :
+                    logging.error(e)
+        return
+            
     def parse_argv(self):
         if len(sys.argv) < 2:
             return self.print_help()
@@ -106,20 +123,21 @@ class ReplyMet(PyTelegram):
             msg_text = msg_dict["text"]
             msg_split = msg_text.strip().split()
             if len(msg_split)>=2 and msg_split[0].lower() == "/met" and msg_split[1].lower() in self.selfname:
-	        if sender_info["username"] in metlist:
-		    self.met(sender_info["username"], receiver_id,0)
-		else:
-                    self.met(sender_info["username"], receiver_id)
+                if sender_info["username"] in self.metlist:
+                    self.met(sender_info["username"], receiver_id,0)
+                else:
+                    self.met(sender_info["username"], receiver_id,1)
                     f=open("metlist.txt","a")
                     f.write(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
                     f.write('\t')
                     f.write(sender_info["username"])
                     f.write('\n')
-                    if len(metlist)>=100 :
-                        del metlist[0]
-                        metlist.append(sender_info["username"])
+                    f.close()
+                    if len(self.metlist)>=self.MAX_METLEN :
+                        del self.metlist[0]
+                        self.metlist.append(sender_info["username"])
                     else :
-                        metlist.append(sender_info["username"])
+                        self.metlist.append(sender_info["username"])
         except Exception as e :
             logging.error(e)
             return False
