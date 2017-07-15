@@ -51,6 +51,7 @@ class AutoMet(PyTelegram):
 
     def get_printinfo(self, target):
         dialogs = self.get_dialog_list()
+        dialogs.reverse()
         for dialog_info in dialogs:
             for key in ["title", "username", "print_name"]:
                 if key in dialog_info and dialog_info[key] == target:
